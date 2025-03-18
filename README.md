@@ -1,20 +1,21 @@
 # **Cholopol's Tetris Inventory System**
 
-[![GitHub license](https://img.shields.io/github/license/cholopol/Cholopols-Tetris-Inventory-System-Beta)](LICENSE) [![Github Stars](https://img.shields.io/github/stars/cholopol/Cholopols-Tetris-Inventory-System-Beta?style=social)](STARS)
+[![GitHub license](https://img.shields.io/github/license/cholopol/Cholopols-Tetris-Inventory-System-Beta)](LICENSE) ![GitHub Repo stars](https://img.shields.io/github/stars/Cholopol/Cholopols-Tetris-Inventory-System-Beta)
+
 
  ![cover](Images/cover.png)
-  <center>基于Unity开发的实用的Tetris俄罗斯方块式物品网格库存系统</center>
+  **基于Unity开发的实用的Tetris俄罗斯方块式物品网格库存系统**
 
 ## 📖 目录
 - [🌟 项目概述](#-项目概述)
 - [✨ 功能特性](#-功能特性)
-  - [核心机制](#核心机制)
-  - [交互系统](#交互系统)
-  - [交互功能流程](#交互功能流程)
-  - [网格设计](#网格设计)
-  - [数据管理](#数据管理)
-  - [数据-逻辑分离](#数据-逻辑分离)
-  - [扩展性](#扩展性)
+  - [核心机制](#-核心机制)
+  - [交互系统](#-交互系统)
+  - [交互功能流程](#-交互功能流程)
+  - [网格设计](#-网格设计)
+  - [数据管理](#-数据管理)
+  - [数据-逻辑分离](#-数据-逻辑分离)
+  - [扩展性](#-扩展性)
 - [🧩 项目结构](#-项目结构)
 - [🚀 环境要求](#-环境要求)
 - [🤝 贡献指南](#-贡献指南)
