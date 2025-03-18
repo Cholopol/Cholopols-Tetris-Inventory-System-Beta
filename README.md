@@ -1,8 +1,8 @@
 # **Cholopol's Tetris Inventory System**
 
-[![GitHub license](https://img.shields.io/github/license/<用户名>/<仓库名>)](LICENSE) [![installs](https://img.shields.io/github/license/<用户名>/<仓库名>)](INSTALL) [![Github Stars](https://img.shields.io/github/stars/<用户名>/<仓库名>?style=social)](STARS)
+[![GitHub license](https://img.shields.io/github/license/cholopol/Cholopols-Tetris-Inventory-System-Beta)](LICENSE) [![Github Stars](https://img.shields.io/github/stars/cholopol/Cholopols-Tetris-Inventory-System-Beta?style=social)](STARS)
 
- ![cover](Images\Cover.png)
+ ![cover](Images/cover.png)
   <center>基于Unity开发的实用的Tetris俄罗斯方块式物品网格库存系统</center>
 
 ## 📖 目录
@@ -25,7 +25,7 @@
 
 ## 🌟 项目概述
 > Cholopol's Tetris Inventory System是基于Unity引擎开发的Tetris背包系统，巧妙融合经典俄罗斯方块机制与游戏道具管理需求。该系统专为需要动态空间规划策略的游戏场景设计，适用于RPG装备管理、生存游戏资源存储、策略游戏战利品分配等多样化游戏类型。
-![cover](Images\TIS.png)
+![TIS](Images/TIS.png)
 
 ---
 
@@ -55,7 +55,7 @@
   - 实时高亮反馈
     - 使用对象池 (`TilePool`) 动态生成绿色（可放置）/红色（冲突）提示瓦片
 
-- ​**交互功能流程** ![cover](Images\sequenceDiagram.png)
+- ​**交互功能流程** ![sequenceDiagram](Images/sequenceDiagram.png)
 
 - **网格设计**
   (0,0) 为原点，X轴向右，Y轴向下，请确保所有TetrisItem的坐标均为非负整数
@@ -151,7 +151,7 @@ Assets/
 如果你有任何问题、建议或想法，请随时联系我：
 - 📧 电子邮箱：cholopol@163.com
 - 💬 社区讨论：敬请期待
-- 🌐 视频介绍：[YouTube演示视频](https://youtu.be/example)
+- 🌐 视频介绍：敬请期待
 - ☕ 赞助我一杯咖啡： [Alipay or WeChat](donate.md)
 
-![cover](Images\Intro.gif)
+![Intro](Images/Intro.gif)
