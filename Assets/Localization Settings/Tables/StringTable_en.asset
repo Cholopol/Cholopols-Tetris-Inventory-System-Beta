@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: StringTable_en
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: d8a14f13b456fc2409633b31731bc0f6, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 109809545216
+    m_Localized: "Key Controls\r\n\uF06C\tQ: Generate item to be placed; click again
+      to cycle to next\r\n\uF06C\tR: Rotate item\r\n\uF06C\tMouse Button 0\u3000\u3000\r\n\t--
+      Left-click on grid panel after generating item with Q to place\u3000\u3000\r\n\t--
+      Hold left-click to drag item, release to place\r\nCreate New Item\r\n\uF06C\tUse
+      ItemEditor for optimized creation\r\n\uF06C\tOptional menu items are non-mandatory;
+      others are required\r\n\uF06C\tEnsure the \"Read/Write\" option is enabled
+      for the Tetris Item's Sprite\n\tGridUIPrefab Setup\u3000\u3000\r\n\t-- Duplicate
+      GP_Template in hierarchy to create custom inventory panel\u3000\u3000\r\n\t--
+      Ensure GP_Template height value correctly displays grid panel, which affects
+      scroll view height\r\nGrid Settings\r\n\uF06C\tNote: Assign \"TetrisGrid\"
+      tag to all Grid objects\r\n\uF06C\tAdd TetrisItemGrid and GridInteract scripts
+      to Image UI for Tetris grid creation\r\n\uF06C\tSet GridSizeWidth and GridSizeHeight
+      to define grid dimensions\r\nSlot Configuration\r\n\uF06C\tNote: Assign \"TetrisSlot\"
+      tag to all Slot objects\r\nCreate New Tetris Shape\r\n\uF06C\tName new shape
+      in TetrisShapePos enum within Enums script\r\n\uF06C\tAdd new shape in GameData/TetrisItemPointSet_SO\r\n\uF06C\tWith
+      top-left corner as origin coordinate(0,0), input grid coordinate points of
+      the shape into points list\r\n"
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: StringTable_fr
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: fr
+  m_SharedData: {fileID: 11400000, guid: d8a14f13b456fc2409633b31731bc0f6, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 109809545216
+    m_Localized: "Commandes clavier\r\n\uF06C\tQ : G\xE9n\xE9rer un objet \xE0 placer
+      ; cliquer \xE0 nouveau pour permuter\r\n\uF06C\tR : Faire pivoter l'objet\r\n\uF06C\tBouton
+      gauche de la souris\u3000\u3000\r\n\t-- Cliquer sur le panneau de grille apr\xE8s
+      g\xE9n\xE9ration avec Q pour placer\u3000\u3000\r\n\t-- Maintenir le clic pour
+      d\xE9placer l'objet, rel\xE2cher pour confirmer\r\nCr\xE9er un nouvel objet\r\n\uF06C\tUtiliser
+      ItemEditor pour une cr\xE9ation optimis\xE9e\r\n\uF06C\tMenu Optional est facultatif
+      ; autres \xE9l\xE9ments obligatoires\r\n\uF06C\tV\xE9rifiez que l'option \xAB
+      Lecture/\xC9criture \xBB est activ\xE9e pour le Sprite du Tetris Item\n\tCr\xE9ation
+      de GridUIPrefab\u3000\u3000\r\n\t-- Copier GP_Template dans la hi\xE9rarchie
+      pour personnaliser le panneau d'inventaire\u3000\u3000\r\n\t-- V\xE9rifier
+      que la hauteur de GP_Template affiche correctement la grille, cruciale pour
+      le d\xE9filement\r\nParam\xE8tres de grille\r\n\uF06C\tNote : Attribuez le
+      tag \"TetrisGrid\" \xE0 tous les objets Grid\r\n\uF06C\tAjoutez les scripts
+      TetrisItemGrid et GridInteract \xE0 l'UI Image pour cr\xE9er une grille Tetris\r\n\uF06C\tD\xE9finissez
+      GridSizeWidth et GridSizeHeight pour ajuster la taille\r\nConfiguration des
+      emplacements\r\n\uF06C\tNote : Attribuez le tag \"TetrisSlot\" \xE0 tous les
+      objets Slot\r\nCr\xE9er une nouvelle forme Tetris\r\n\uF06C\tNommez la forme
+      dans l'enum TetrisShapePos du script Enums\r\n\uF06C\tAjoutez la forme dans
+      GameData/TetrisItemPointSet_SO\r\n\uF06C\tAvec le coin sup\xE9rieur gauche
+      comme origine (0,0), saisissez les coordonn\xE9es de la forme dans la liste
+      points\r\n"
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: StringTable_es
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: es
+  m_SharedData: {fileID: 11400000, guid: d8a14f13b456fc2409633b31731bc0f6, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 109809545216
+    m_Localized: "Controles de teclado\r\n\uF06C\tQ: Generar \xEDtem para colocar;
+      clic continuo cambia al siguiente\r\n\uF06C\tR: Rotar \xEDtem\r\n\uF06C\tBot\xF3n
+      izquierdo del rat\xF3n\u3000\u3000\r\n\t-- Clic en panel de grilla tras generar
+      con Q para colocar\u3000\u3000\r\n\t-- Mantener presionado para arrastrar,
+      soltar para ubicar\r\nCrear nuevo \xEDtem\r\n\uF06C\tUsar ItemEditor para creaci\xF3n
+      optimizada\r\n\uF06C\tMen\xFA Optional es opcional; otros campos obligatorios\r\n\uF06C\tAseg\xFArate
+      de que la opci\xF3n \"Lectura/Escritura\" est\xE9 habilitada para el Sprite
+      del Tetris Item\n\tConfiguraci\xF3n de GridUIPrefab\u3000\u3000\r\n\t-- Duplicar
+      GP_Template en jerarqu\xEDa para personalizar panel de inventario\u3000\u3000\r\n\t--
+      Asegurar que la altura de GP_Template muestre correctamente la grilla (afecta
+      el scroll)\r\nConfiguraci\xF3n de grilla\r\n\uF06C\tNota: Asignar etiqueta
+      \"TetrisGrid\" a todos los objetos Grid\r\n\uF06C\tA\xF1adir scripts TetrisItemGrid
+      y GridInteract a Image UI\r\n\uF06C\tDefinir GridSizeWidth y GridSizeHeight
+      para dimensiones\r\nConfiguraci\xF3n de slots\r\n\uF06C\tNota: Asignar etiqueta
+      \"TetrisSlot\" a todos los objetos Slot\r\nCrear nueva forma Tetris\r\n\uF06C\tNombrar
+      forma en el enum TetrisShapePos del script Enums\r\n\uF06C\tA\xF1adir forma
+      en GameData/TetrisItemPointSet_SO\r\n\uF06C\tCon esquina superior izquierda
+      como origen (0,0), ingresar coordenadas en lista points\r\n"
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

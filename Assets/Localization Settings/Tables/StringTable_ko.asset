@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: StringTable_ko
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: ko
+  m_SharedData: {fileID: 11400000, guid: d8a14f13b456fc2409633b31731bc0f6, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 109809545216
+    m_Localized: "\uD0A4 \uC870\uC791\r\n\uF06C\tQ: \uBC30\uCE58\uD560 \uC544\uC774\uD15C
+      \uC0DD\uC131, \uC5F0\uC18D \uD074\uB9AD \uC2DC \uB2E4\uC74C\uC73C\uB85C \uC804\uD658\r\n\uF06C\tR:
+      \uC544\uC774\uD15C \uD68C\uC804\r\n\uF06C\t\uB9C8\uC6B0\uC2A4 \uC67C\uCABD
+      \uBC84\uD2BC\u3000\u3000\r\n\t-- Q\uB85C \uC0DD\uC131 \uD6C4 \uADF8\uB9AC\uB4DC
+      \uD328\uB110 \uD074\uB9AD\uD558\uC5EC \uBC30\uCE58\u3000\u3000\r\n\t-- \uAE38\uAC8C
+      \uB20C\uB7EC \uB4DC\uB798\uADF8, \uB193\uC544 \uBC30\uCE58\r\n\uC0C8 \uC544\uC774\uD15C
+      \uC0DD\uC131\r\n\uF06C\tItemEditor \uC0AC\uC6A9 \uAD8C\uC7A5\r\n\uF06C\tOptional
+      \uBA54\uB274\uB294 \uC120\uD0DD \uD56D\uBAA9, \uB098\uBA38\uC9C0\uB294 \uD544\uC218\r\n\uF06C\tTetris
+      Item\uC758 Sprite \"\uC77D\uAE30/\uC4F0\uAE30\" \uC635\uC158\uC774 \uC120\uD0DD\uB418\uC5C8\uB294\uC9C0
+      \uD655\uC778\uD558\uC2ED\uC2DC\uC624\n\tGridUIPrefab \uC0DD\uC131\u3000\u3000\r\n\t--
+      \uACC4\uCE35 \uAD6C\uC870\uC5D0\uC11C GP_Template \uBCF5\uC81C\uD558\uC5EC
+      \uCEE4\uC2A4\uD140 \uC778\uBCA4\uD1A0\uB9AC \uD328\uB110 \uC0DD\uC131\u3000\u3000\r\n\t--
+      GP_Template \uB192\uC774\uAC00 \uADF8\uB9AC\uB4DC \uD45C\uC2DC\uC5D0 \uC801\uC808\uD55C\uC9C0
+      \uD655\uC778 (\uC2A4\uD06C\uB864 \uBDF0 \uB192\uC774 \uC124\uC815 \uAD00\uB828)\r\n\uADF8\uB9AC\uB4DC
+      \uC124\uC815\r\n\uF06C\t\uCC38\uACE0: \uBAA8\uB4E0 Grid \uAC1D\uCCB4\uC5D0
+      \"TetrisGrid\" \uD0DC\uADF8 \uD560\uB2F9\r\n\uF06C\tImage UI\uC5D0 TetrisItemGrid
+      \uBC0F GridInteract \uC2A4\uD06C\uB9BD\uD2B8 \uCD94\uAC00\r\n\uF06C\tGridSizeWidth\uC640
+      GridSizeHeight\uB85C \uADF8\uB9AC\uB4DC \uD06C\uAE30 \uC870\uC808\r\n\uC2AC\uB86F
+      \uC124\uC815\r\n\uF06C\t\uCC38\uACE0: \uBAA8\uB4E0 Slot \uAC1D\uCCB4\uC5D0
+      \"TetrisSlot\" \uD0DC\uADF8 \uD560\uB2F9\r\n\uC0C8 \uD14C\uD2B8\uB9AC\uC2A4
+      \uBAA8\uC591 \uC0DD\uC131\r\n\uF06C\tEnums \uC2A4\uD06C\uB9BD\uD2B8\uC758 TetrisShapePos\uC5D0\uC11C
+      \uC774\uB984 \uC9C0\uC815\r\n\uF06C\tGameData/TetrisItemPointSet_SO\uC5D0 \uBAA8\uC591
+      \uCD94\uAC00\r\n\uF06C\t\uC88C\uC0C1\uB2E8\uC744 \uC6D0\uC810(0,0)\uC73C\uB85C
+      \uC124\uC815 \uD6C4 \uBAA8\uC591\uC758 \uC88C\uD45C\uC810\uC744 points \uB9AC\uC2A4\uD2B8\uC5D0
+      \uC785\uB825"
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

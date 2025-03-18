@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: StringTable_zh-Hans
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: zh-Hans
+  m_SharedData: {fileID: 11400000, guid: d8a14f13b456fc2409633b31731bc0f6, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 109809545216
+    m_Localized: "==> \u6309\u952E\u64CD\u4F5C\r\n-Q \u751F\u6210\u5F85\u653E\u7F6E\u7269\u54C1\uFF0C\u7EE7\u7EED\u70B9\u51FB\u5C06\u5207\u6362\u4E0B\u4E00\u4E2A\r\n-R
+      \u65CB\u8F6C\u7269\u54C1\r\n-Mouse Button 0\r\n\t--\u6309Q\u751F\u6210\u7269\u54C1\u540E\u9F20\u6807\u5DE6\u952E\u70B9\u51FB\u7F51\u683C\u9762\u677F\u653E\u7F6E\u7269\u54C1\r\n\t--\u9F20\u6807\u5DE6\u952E\u6301\u7EED\u6309\u4F4F\u76EE\u6807\u7269\u54C1\u5F00\u59CB\u62D6\u62FD\uFF0C\u677E\u5F00\u9F20\u6807\u5DE6\u952E\u653E\u7F6E\u7269\u54C1\r\n\r\n==>\u521B\u5EFA\u65B0\u7269\u54C1\r\n-\u4F7F\u7528ItemEditor\u6765\u66F4\u597D\u5730\u521B\u5EFA\r\n-Optional\u83DC\u5355\u4E3A\u9009\u586B\u9879\uFF0C\u5176\u4ED6\u4E3A\u5FC5\u586B\u9879\r\n-\u786E\u4FDD\u52FE\u9009Tetris
+      Item\u7684Sprite\u7684\u201C\u8BFB\u53D6/\u5199\u5165\u201D\u9009\u9879\n-GridUIPrefab\u7684\u521B\u5EFA\r\n\t--\u590D\u5236\u5C42\u7EA7\u4E2D\u7684GP_Template\u6765\u521B\u5EFA\u81EA\u5B9A\u4E49\u80CC\u5305\u9762\u677F\u3002\r\n\t--\u786E\u4FDDGP_Template\u7684\u9AD8\u5EA6\u503C\u80FD\u591F\u6B63\u786E\u663E\u793A\u7F51\u683C\u9762\u677F\uFF0C\u5B83\u5173\u7CFB\u7740\u6EDA\u52A8\u89C6\u56FE\u80FD\u5426\u6B63\u786E\u8BBE\u7F6E\u5408\u9002\u7684\u9AD8\u5EA6\r\n\n==>\u7F51\u683C\u8BBE\u7F6E\r\n-\u4E3AImage
+      UI\u6DFB\u52A0TetrisItemGrid\u548CGridInteract\u811A\u672C\u6765\u521B\u5EFATetris\u7F51\u683C\r\n-\u8BBE\u7F6EGridSizeWidth\u548CGridSizeHeight\u6765\u8BBE\u7F6E\u7F51\u683C\u7684\u5927\u5C0F\r\n\n==>\u521B\u5EFA\u65B0\u7684Tetris\u5F62\u72B6\r\n-\u5728Enums\u811A\u672C\u7684TetrisShapePos\u4E2D\u4E3A\u65B0\u589E\u5F62\u72B6\u547D\u540D\r\n-\u5728GameData/TetrisItemPointSet_SO\u4E2D\u589E\u52A0\u65B0\u7684\u5F62\u72B6\r\n-\u8BBE\u5B9A\u5DE6\u4E0A\u89D2\u4E3A\u539F\u70B9\uFF0C\u5750\u6807\u4E3A(0,0)\uFF0C\u5C06\u4EFB\u610F\u5F62\u72B6\u7684\u7F51\u683C\u5750\u6807\u7CFB\u70B9\u5750\u6807\u586B\u5165points\u5217\u8868\u4E2D"
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []
