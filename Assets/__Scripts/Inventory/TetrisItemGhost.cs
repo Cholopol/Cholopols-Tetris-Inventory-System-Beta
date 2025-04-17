@@ -2,20 +2,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using static ChosTIS.Utilities;
 
 namespace ChosTIS
 {
-    public class TetrisItemGhost : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler, ITetrisRotatable
+    public class TetrisItemGhost : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler, IPointerDownHandler, ITetrisRotatable
     {
         //Private fields
         public PlaceState PlaceState { get; set; } = PlaceState.InvalidPos;
         public bool OnDragging { get; set; } = false;
         public TetrisItemGrid selectedTetrisItemOrginGrid;
         public TetrisItem selectedTetrisItem;
-        public RectTransform ghostRect;
-        public Image ghostImage;
+        private RectTransform ghostRect;
+        private Image ghostImage;
         private CanvasGroup canvasGroup;
         private Vector2Int oldPosition;
+        private TetrisItem overlapItem;
+        [SerializeField] RightClickMenuPanel tetrisItemMenuPanel;
 
         //Public fields
         public ItemDetails ItemDetails { get; set; }
@@ -26,8 +29,6 @@ namespace ChosTIS
         public bool Rotated { get; set; } = false;
         public Dir Dir { get; set; } = Dir.Down;
         public Vector2Int RotationOffset { get; set; }
-
-        //public TetrisPieceShape tetrisPieceShape;
         public List<Vector2Int> TetrisPieceShapePos { get; set; }
 
         public int WIDTH => Rotated ? ItemDetails.yHeight : ItemDetails.xWidth;
@@ -57,8 +58,21 @@ namespace ChosTIS
 
         }
 
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            if (eventData.button == PointerEventData.InputButton.Right)
+            {
+                tetrisItemMenuPanel.menuRect.position = selectedTetrisItem.transform.position;
+                tetrisItemMenuPanel._currentItem = selectedTetrisItem;
+                tetrisItemMenuPanel.Show(true);
+                tetrisItemMenuPanel.SetBtnActive();
+            }
+
+        }
+
         public void OnBeginDrag(PointerEventData eventData)
         {
+            if (eventData.button != PointerEventData.InputButton.Left) return;
             canvasGroup.blocksRaycasts = false;
             OnDragging = true;
             ghostImage.color = new Color(1, 1, 1, 0.8f);
@@ -71,6 +85,7 @@ namespace ChosTIS
 
         public void OnDrag(PointerEventData eventData)
         {
+            if (eventData.button != PointerEventData.InputButton.Left) return;
             ghostRect.anchoredPosition += eventData.delta / GetComponentInParent<Canvas>().scaleFactor;
         }
 
@@ -102,15 +117,16 @@ namespace ChosTIS
                 GameObject target = result.gameObject;
                 if (target.CompareTag("TetrisGrid"))
                 {
-                    target.GetComponent<TetrisItemGrid>().PickUpItem(
-                    selectedTetrisItem.onGridPositionX,
-                    selectedTetrisItem.onGridPositionY,
-                    selectedTetrisItem.RotationOffset,
-                    selectedTetrisItem.TetrisPieceShapePos);
+                    target.GetComponent<TetrisItemGrid>().RemoveTetrisItem(
+                        selectedTetrisItem,
+                        selectedTetrisItem.onGridPositionX,
+                        selectedTetrisItem.onGridPositionY,
+                        selectedTetrisItem.RotationOffset,
+                        selectedTetrisItem.TetrisPieceShapePos);
                 }
                 else if (target.CompareTag("TetrisSlot"))
                 {
-                    target.GetComponent<InventorySlot>().PickUpItem();
+                    target.GetComponent<InventorySlot>().RemoveTetrisItem();
                 }
             }
         }
@@ -145,10 +161,26 @@ namespace ChosTIS
                             onGridPositionX + v2i.x + RotationOffset.x,
                             onGridPositionY + v2i.y + RotationOffset.y) ?
                         PlaceState.OnGridHasItem : PlaceState.OnGridNoItem;
-                        //Debug.Log(PlaceState);
                         if (PlaceState == PlaceState.OnGridHasItem)
                         {
-                            return;
+                            if (overlapItem == null)
+                            {
+                                overlapItem = target.GetComponent<TetrisItemGrid>().GetTetrisItem(
+                                onGridPositionX + v2i.x + RotationOffset.x,
+                                onGridPositionY + v2i.y + RotationOffset.y);
+                                return;
+                            }
+                            else
+                            {
+                                //If you find multiple overlapping items in the range
+                                if (overlapItem != target.GetComponent<TetrisItemGrid>().GetTetrisItem(
+                                onGridPositionX + v2i.x + RotationOffset.x,
+                                onGridPositionY + v2i.y + RotationOffset.y))
+                                {
+                                    overlapItem = null;
+                                    return;
+                                }
+                            }
                         }
                     }
                     return;
@@ -171,56 +203,91 @@ namespace ChosTIS
             switch (PlaceState)
             {
                 case PlaceState.OnGridHasItem:
-                    // return-to-home position
-                    ResetState();
+                    PlaceOnOverlapItem(selectedTetrisItem);
+                    //Debug.Log("A");
                     break;
                 case PlaceState.OnSlotHasItem:
-                    // return-to-home position
-                    ResetState();
+                    ResetState(selectedTetrisItem);
+                    //Debug.Log("B");
                     break;
                 case PlaceState.OnGridNoItem:
-                    PlaceOnGrid();
-                    // Adsorb to the Grid position
+                    PlaceOnGrid(selectedTetrisItem);
+                    //Debug.Log("C");
                     break;
                 case PlaceState.OnSlotNoItem:
-                    PlaceOnSlot();
-                    // Adsorb to the Slot position
+                    PlaceOnSlot(selectedTetrisItem);
+                    //Debug.Log("D");
                     break;
                 case PlaceState.InvalidPos:
-                    // return-to-home position
-                    ResetState();
+                    ResetState(selectedTetrisItem);
+                    //Debug.Log("E");
                     break;
             }
         }
 
-        private void PlaceOnGrid()
+        private void PlaceOnGrid(TetrisItem selectedTetrisItem)
         {
-            selectedTetrisItem.CurrentPlacedGrid = InventoryManager.Instance.selectedTetrisItemGrid;
-            selectedTetrisItem.CurrentPlacedSlot = null;
             TetrisItemMediator.Instance.ApplyStateToItem(selectedTetrisItem);
             InventoryManager.Instance.PlaceGhostItem(
                 InventoryManager.Instance.GetGhostTileGridOriginPosition(),
-                 selectedTetrisItem.CurrentPlacedGrid);
+                selectedTetrisItem,
+                InventoryManager.Instance.selectedTetrisItemGrid,
+                selectedTetrisItem.CurrentInventoryContainer as InventorySlot);
+            selectedTetrisItem.CurrentInventoryContainer = InventoryManager.Instance.selectedTetrisItemGrid;
             transform.position = selectedTetrisItem.transform.position;
+            selectedTetrisItem.SetItemData(selectedTetrisItem.GetInstanceID());
         }
 
-        private void PlaceOnSlot()
+        private void PlaceOnSlot(TetrisItem selectedTetrisItem)
         {
             TetrisItemMediator.Instance.ApplyStateToItem(selectedTetrisItem);
-            bool canPlace = CurrentSlot.PlaceTetrisItem(selectedTetrisItem);
+            bool canPlace = CurrentSlot.TryPlaceTetrisItem(selectedTetrisItem);
             if (canPlace)
             {
-                selectedTetrisItem.CurrentPlacedGrid = null;
-                selectedTetrisItem.CurrentPlacedSlot = CurrentSlot;
+                selectedTetrisItem.CurrentInventoryContainer = CurrentSlot;
                 transform.position = CurrentSlot.transform.position;
+                selectedTetrisItem.SetItemData(selectedTetrisItem.GetInstanceID());
             }
             else
             {
-                ResetState();
+                ResetState(selectedTetrisItem);
             }
         }
 
-        public void ResetState()
+        private void PlaceOnOverlapItem(TetrisItem selectedTetrisItem)
+        {
+            bool canStack = overlapItem != null
+                && overlapItem.ItemDetails.itemID == selectedTetrisItem.ItemDetails.itemID
+                && selectedTetrisItem.ItemDetails.maxStack != 0
+                && Utilities.TetrisItemUtilities.TryStackItems(overlapItem, selectedTetrisItem);
+
+            if (canStack)
+            {
+                selectedTetrisItem.SetItemData(selectedTetrisItem.GetInstanceID());
+                overlapItem.SetItemData(overlapItem.GetInstanceID());
+                selectedTetrisItem.TryGetItemComponent<StackableComponent>(out StackableComponent stackableComponent);
+                if (stackableComponent.CurrentStack <= 0)
+                {
+                    TetrisItemGrid otherGrid = (TetrisItemGrid)selectedTetrisItem.CurrentInventoryContainer;
+                    otherGrid.RemoveTetrisItem(selectedTetrisItem,
+                        selectedTetrisItem.onGridPositionX,
+                        selectedTetrisItem.onGridPositionY,
+                        selectedTetrisItem.RotationOffset,
+                        selectedTetrisItem.TetrisPieceShapePos);
+                    selectedTetrisItem.RemoveItemData(selectedTetrisItem.GetInstanceID());
+                    Destroy(selectedTetrisItem.gameObject);
+                    TetrisItemUtilities.TriggerPointerEnter(overlapItem.gameObject);
+                    overlapItem = null;
+                    return;
+                }
+            }
+
+            ResetState(selectedTetrisItem);
+            if (overlapItem != null) TetrisItemUtilities.TriggerPointerEnter(overlapItem.gameObject);
+            overlapItem = null;
+        }
+
+        private void ResetState(TetrisItem selectedTetrisItem)
         {
             TetrisItemMediator.Instance.ApplyStateToGhost(this);
             if (selectedTetrisItem.IsItemLocationOnGrid())
@@ -228,11 +295,14 @@ namespace ChosTIS
                 InventoryManager.Instance.PlaceGhostItem(new Vector2Int(
                     selectedTetrisItem.onGridPositionX,
                     selectedTetrisItem.onGridPositionY),
-                    selectedTetrisItem.CurrentPlacedGrid);
+                    selectedTetrisItem,
+                    selectedTetrisItem.CurrentInventoryContainer as TetrisItemGrid,
+                    selectedTetrisItem.CurrentInventoryContainer as InventorySlot);
             }
             else
             {
-                selectedTetrisItem.CurrentPlacedSlot.PlaceTetrisItem(selectedTetrisItem);
+                InventorySlot slot = selectedTetrisItem.CurrentInventoryContainer as InventorySlot;
+                slot.TryPlaceTetrisItem(selectedTetrisItem);
             }
             transform.position = selectedTetrisItem.transform.position;
 
@@ -252,7 +322,7 @@ namespace ChosTIS
                 ghostRect.sizeDelta = item.GetComponent<RectTransform>().sizeDelta;
 
                 // Synchronize business logic attributes
-                selectedTetrisItemOrginGrid = item.CurrentPlacedGrid;
+                selectedTetrisItemOrginGrid = item.CurrentInventoryContainer as TetrisItemGrid;
                 selectedTetrisItem = item;
                 ItemDetails = item.ItemDetails;
                 Rotated = item.Rotated;

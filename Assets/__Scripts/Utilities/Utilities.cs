@@ -1,6 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace ChosTIS
 {
@@ -58,7 +58,7 @@ namespace ChosTIS
             }
 
             // Rotation points set
-            private static List<Vector2Int> RotatePoints(List<Vector2Int> points, Dir dir)
+            public static List<Vector2Int> RotatePoints(List<Vector2Int> points, Dir dir)
             {
                 List<Vector2Int> rotatedPoints = new();
 
@@ -70,20 +70,20 @@ namespace ChosTIS
                     switch (dir)
                     {
                         case Dir.Left:
-                            rotatedPoints.Add(new Vector2Int(-y, x)); // 顺时针90度
+                            rotatedPoints.Add(new Vector2Int(-y, x));
                             break;
                         case Dir.Up:
-                            rotatedPoints.Add(new Vector2Int(-x, -y)); // 顺时针180度
+                            rotatedPoints.Add(new Vector2Int(-x, -y));
                             break;
                         case Dir.Right:
-                            rotatedPoints.Add(new Vector2Int(y, -x)); // 顺时针270度
+                            rotatedPoints.Add(new Vector2Int(y, -x));
                             break;
                         case Dir.Down:
-                            rotatedPoints.Add(new Vector2Int(x, y)); // 顺时针360度（不旋转）
+                            rotatedPoints.Add(new Vector2Int(x, y));
                             break;
                         default:
-                            Debug.LogWarning("不支持的旋转角度！");
-                            return points; // 返回原始点集
+                            Debug.LogWarning("Unsupported rotation angle!");
+                            return points;
                     }
                 }
 
@@ -128,10 +128,152 @@ namespace ChosTIS
                 }
             }
 
+            public static bool IsRotated(Dir dir)
+            {
+                return dir == Dir.Left || dir == Dir.Right;
+            }
+
+        }
+
+        #endregion
+
+        #region Get Object By InstanceID
+        /// <summary>
+        /// Manage the global caching system of objects through InstanceID
+        /// </summary>
+        public static class InstanceIDManager
+        {
+            // Main dictionary: stores the mapping between InstanceID and objects
+            private static Dictionary<int, Object> _instanceIDMap =
+                new Dictionary<int, Object>();
+
+            // Auxiliary dictionary: prevent objects from being registered repeatedly (optional)
+            private static Dictionary<Object, int> _reverseLookupMap =
+                new Dictionary<Object, int>();
+
+            // Thread safe lock (if multi-threaded operation is required)
+            private static readonly object _lock = new object();
+
+            /// <summary>
+            /// Register objects to the caching system
+            /// </summary>
+            public static void Register(Object obj)
+            {
+                if (obj == null) return;
+
+                lock (_lock)
+                {
+                    int instanceID = obj.GetInstanceID();
+
+                    // If the object is already registered, remove the old record first
+                    if (_reverseLookupMap.ContainsKey(obj))
+                    {
+                        int oldID = _reverseLookupMap[obj];
+                        _instanceIDMap.Remove(oldID);
+                        _reverseLookupMap.Remove(obj);
+                    }
+
+                    // Add new Record
+                    _instanceIDMap[instanceID] = obj;
+                    _reverseLookupMap[obj] = instanceID;
+                }
+            }
+
+            /// <summary>
+            /// Cancel Object
+            /// </summary>
+            public static void Unregister(Object obj)
+            {
+                if (obj == null) return;
+
+                lock (_lock)
+                {
+                    if (_reverseLookupMap.TryGetValue(obj, out int instanceID))
+                    {
+                        _instanceIDMap.Remove(instanceID);
+                        _reverseLookupMap.Remove(obj);
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Retrieve objects through InstanceID
+            /// </summary>
+            public static T GetObject<T>(int instanceID) where T : Object
+            {
+                lock (_lock)
+                {
+                    if (_instanceIDMap.TryGetValue(instanceID, out Object obj))
+                    {
+                        // Automatically clear destroyed objects
+                        if (obj == null)
+                        {
+                            _instanceIDMap.Remove(instanceID);
+                            _reverseLookupMap.Remove(obj);
+                            return null;
+                        }
+                        Debug.Log(obj.GetType().ToString() + obj.name);
+                        return obj as T;
+                    }
+                    return null;
+                }
+            }
+
+            /// <summary>
+            /// Clear all caches (e.g. called during scene switching)
+            /// </summary>
+            public static void Clear()
+            {
+                lock (_lock)
+                {
+                    _instanceIDMap.Clear();
+                    _reverseLookupMap.Clear();
+                }
+            }
         }
         #endregion
 
+        public static class TetrisItemUtilities
+        {
+            //public static bool IsItemLocationOnGrid(this TetrisItem item)
+            //{
+            //    if (item.CurrentInventoryContainer is TetrisItemGrid)
+            //    {
+            //        return true;
+            //    }
+            //    else
+            //    {
+            //        return false;
+            //    }
+            //}
+
+            public static bool TryStackItems(TetrisItem source, TetrisItem target)
+            {
+                if (!source.TryGetItemComponent<StackableComponent>(out var srcStack)) return false;
+                if (!target.TryGetItemComponent<StackableComponent>(out var tarStack)) return false;
+
+                return srcStack.TryMergeStack(tarStack);
+            }
+
+            /// <summary>
+            /// Force Updating targetUIObject PointerEnter event
+            /// </summary>
+            /// <param name="targetUIObject"></param>
+            public static void TriggerPointerEnter(GameObject targetUIObject)
+            {
+                IPointerEnterHandler handler = targetUIObject.GetComponent<IPointerEnterHandler>();
+                if (handler != null)
+                {
+                    PointerEventData eventData = new PointerEventData(EventSystem.current);
+                    eventData.pointerEnter = targetUIObject;
+                    eventData.position = Input.mousePosition;
+
+                    handler.OnPointerEnter(eventData);
+                }
+            }
+
+        }
 
     }
-}
 
+}

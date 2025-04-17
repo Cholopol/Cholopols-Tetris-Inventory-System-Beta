@@ -32,7 +32,7 @@ namespace ChosTIS
         public void CacheItemState(TetrisItem item)
         {
             _cachedOrginItem = item;
-            _cachedOrginGrid = item.CurrentPlacedGrid;
+            _cachedOrginGrid = item.CurrentInventoryContainer as TetrisItemGrid;
             _cachedItemDir = item.Dir;
             _cachedItemRotated = item.Rotated;
             _cachedItemRotationOffset = item.RotationOffset;
@@ -61,9 +61,22 @@ namespace ChosTIS
 
         }
 
+        public void ApplyStateToItem(TetrisItem item, Dir dir, bool rotated, Vector2Int rotationOffset, List<Vector2Int> tetrisPieceShapePos)
+        {
+            item.Dir = dir;
+            item.Rotated = rotated;
+            item.RotationOffset = rotationOffset;
+            item.TetrisPieceShapePos = tetrisPieceShapePos;
+        }
+
         public void SyncGhostFromItem(TetrisItem item)
         {
             tetrisItemGhost.InitializeFromItem(item);
+        }
+
+        public TetrisItemGhost GetTetrisItemGhost()
+        {
+            return tetrisItemGhost;
         }
 
     }

@@ -2,19 +2,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using static ChosTIS.Utilities;
+using ChosTIS.SaveLoadSystem;
 
 namespace ChosTIS
 {
     public class TetrisItem : MonoBehaviour, IPointerEnterHandler, ITetrisRotatable
     {
         //Private fields
+        private List<IItemComponent> _components = new();
         private Image image;
-        private Transform gridPanel;
 
         //Public fields
         public ItemDetails ItemDetails { get; set; }
-        public InventorySlot CurrentPlacedSlot { get; set; }
-        public TetrisItemGrid CurrentPlacedGrid { get; set; }
+        public IInventoryContainer CurrentInventoryContainer { get; set; }
         public InventorySlotType InventorySlotType { get; set; } = InventorySlotType.Pocket;
         public int onGridPositionX;
         public int onGridPositionY;
@@ -30,35 +31,72 @@ namespace ChosTIS
 
         private void Awake()
         {
+            InstanceIDManager.Register(this);
             image = GetComponent<Image>();
         }
 
-        public void Set(ItemDetails itemData)
+        private void OnDestroy()
+        {
+            InstanceIDManager.Unregister(this);
+            foreach (var component in _components)
+                component.OnDetach();
+        }
+
+        public void Initialize(ItemDetails itemDetails, GridItem itemData, TetrisItemGrid grid)
         {
             image.alphaHitTestMinimumThreshold = 0.1f;
-            image.raycastPadding = new Vector4(-10, -10, -10, -10);
-            ItemDetails = itemData;
-            InventorySlotType = itemData.inventorySlotType;
-            CurrentPlacedGrid = InventoryManager.Instance.selectedTetrisItemGrid;
-            TetrisPieceShapePos = InventoryManager.Instance.GetTetrisPieceShapePos(itemData.tetrisPieceShape);
-            RotationOffset = Utilities.RotationHelper.GetRotationOffset(Dir, WIDTH, HEIGHT);
+            image.raycastPadding = new Vector4(-1, -1, -1, -1);
+            ItemDetails = itemDetails;
+            InventorySlotType = itemDetails.inventorySlotType;
+            CurrentInventoryContainer = grid;
+            TetrisPieceShapePos = Utilities.RotationHelper.RotatePoints(InventoryManager.Instance.GetTetrisPieceShapePos(itemDetails.tetrisPieceShape), Dir);
+            RotationOffset = RotationHelper.GetRotationOffset(Dir, WIDTH, HEIGHT);
             //Modify item size
             Vector2 size = new Vector2();
-            size.x = itemData.xWidth * TetrisItemGrid.tileSizeWidth;
-            size.y = itemData.yHeight * TetrisItemGrid.tileSizeHeight;
+            size.x = itemDetails.xWidth * TetrisItemGrid.tileSizeWidth;
+            size.y = itemDetails.yHeight * TetrisItemGrid.tileSizeHeight;
             GetComponent<RectTransform>().sizeDelta = size;
+            //Initialize item components
+            AddItemComponent<InformationlayoutComponent>().Initialize();
+            if (itemDetails.maxStack > 0) AddItemComponent<StackableComponent>().Initialize(itemData);
+            if (itemDetails.gridUIPrefab != null) AddItemComponent<GridPanelComponent>().Initialize();
+
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
             //Update only when not selected
             TetrisItemMediator.Instance.SyncGhostFromItem(this);
+        }
 
+        public T AddItemComponent<T>() where T : Component, IItemComponent
+        {
+            var component = gameObject.AddComponent<T>();
+            component.OnAttach(this);
+            _components.Add(component);
+            return component;
+        }
+
+        public void RemoveItemComponent<T>() where T : IItemComponent
+        {
+            var component = GetComponent<T>();
+            if (component != null)
+            {
+                component.OnDetach();
+                _components.Remove(component);
+                Destroy(component as Component);
+            }
+        }
+
+        public bool TryGetItemComponent<T>(out T result) where T : IItemComponent
+        {
+            result = GetComponent<T>();
+            return result != null;
         }
 
         public bool IsItemLocationOnGrid()
         {
-            if (CurrentPlacedGrid != null && CurrentPlacedSlot == null)
+            if (CurrentInventoryContainer is TetrisItemGrid)
             {
                 return true;
             }
@@ -68,26 +106,61 @@ namespace ChosTIS
             }
         }
 
-        public void SetSlotGridPanel(InventorySlot slot)
+        /// <summary>
+        /// Retrieve GridItem from the inventoryData_SO using the instance ID of TetrisItem and modify its data
+        /// </summary>
+        /// <param name="itemIndex"></param>
+        public void SetItemData(int itemIndex)
         {
-            if (gridPanel != null)
+            GridItem gridItem = InventorySaveLoadService.Instance.inventoryData_SO.GetGridItem(itemIndex);
+            if (IsItemLocationOnGrid())
             {
-                gridPanel.SetParent(slot.gridPanelParent);
-                gridPanel.gameObject.SetActive(true);
+                if (gridItem != null)
+                {
+                    SetGridItemData(gridItem);
+                }
+                else
+                {
+                    GridItem item = new GridItem();
+                    SetGridItemData(item);
+                    InventorySaveLoadService.Instance.inventoryData_SO.inventoryItemList.Add(item);
+                }
             }
             else
             {
-                gridPanel = Instantiate(ItemDetails.gridUIPrefab);
-                gridPanel.SetParent(slot.gridPanelParent, false);
-                gridPanel.gameObject.SetActive(true);
-                gridPanel.SetAsFirstSibling();
+                SetGridItemData(gridItem);
             }
         }
 
-        public void RemoveSlotGridPanel()
+        public void RemoveItemData(int itemIndex)
         {
-            gridPanel.SetParent(transform);
-            gridPanel.gameObject.SetActive(false);
+            GridItem gridItem = InventorySaveLoadService.Instance.inventoryData_SO.GetGridItem(itemIndex);
+            if (gridItem != null)
+            {
+                InventorySaveLoadService.Instance.inventoryData_SO.inventoryItemList.Remove(gridItem);
+            }
         }
+
+        /// <summary>
+        /// Assign the relevant fields of TetrisItem to gridItem
+        /// </summary>
+        /// <param name="gridItem"></param>
+        private void SetGridItemData(GridItem gridItem)
+        {
+            gridItem.itemID = ItemDetails.itemID;
+            gridItem.itemIndex = GetInstanceID();
+            gridItem.parentItemIndex = transform.parent?.GetComponent<TetrisItemGrid>()?.RelatedTetrisItem?.GetInstanceID() ?? 0;
+            gridItem.gridPIndex = transform?.parent.GetSiblingIndex() ?? -1;
+            gridItem.isParent = transform.GetComponentInChildren<Transform>(true).CompareTag("GridPanel");
+            gridItem.isOnSlot = !IsItemLocationOnGrid();
+            gridItem.persistentGridTypeIndex = transform.parent?.GetComponent<TetrisItemGrid>()?.GetPersistentGridIdentification()?.GetPersistentGridTypeIndex() ?? 0;
+            gridItem.orginPosition = new Vector2Int(onGridPositionX, onGridPositionY);
+            gridItem.direction = Dir;
+            if (TryGetItemComponent<StackableComponent>(out var stackableComponent))
+            {
+                gridItem.stack = stackableComponent.CurrentStack;
+            }
+        }
+
     }
 }

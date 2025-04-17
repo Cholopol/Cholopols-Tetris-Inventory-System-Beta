@@ -6,7 +6,7 @@ public class ItemDataList_SO : ScriptableObject
 {
     public List<ItemDetails> itemDetailsList;
 
-    public ItemDetails GetItemDetails(int ID)
+    public ItemDetails GetItemDetailsByID(int ID)
     {
         return itemDetailsList.Find(i => i.itemID == ID);
     }

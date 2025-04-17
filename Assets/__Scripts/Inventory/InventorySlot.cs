@@ -1,22 +1,30 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using static ChosTIS.Utilities;
 
 namespace ChosTIS
 {
-    public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public class InventorySlot : MonoBehaviour, IInventoryFunctionalContainer, IPointerEnterHandler, IPointerExitHandler
     {
         private TetrisItemGhost tetrisItemGhost;
-        public TetrisItem PlacedTetrisItem { get; set; }
-        public Transform gridPanelParent;
-        [Header("≈‰÷√œÓ")]
+        public TetrisItem RelatedTetrisItem { get; set; }
+        public Transform GridPanelParent { get; set; }
+        [Header("Configuration")]
         [SerializeField] private InventorySlotType inventorySlotType;
         [SerializeField] private Image activeUIImage;
 
         private void Start()
         {
-            tetrisItemGhost = InventoryManager.Instance.tetrisItemGhost;
-            gridPanelParent = transform.parent.Find("GridPanel");
+            InstanceIDManager.Register(this);
+
+            tetrisItemGhost = TetrisItemMediator.Instance.GetTetrisItemGhost();
+            GridPanelParent = transform.parent.Find("GridPanel");
+        }
+
+        private void OnDestroy()
+        {
+            InstanceIDManager.Unregister(this);
         }
 
         public void OnPointerEnter(PointerEventData eventData)
@@ -29,19 +37,11 @@ namespace ChosTIS
             tetrisItemGhost.CurrentSlot = null;
         }
 
-        public bool PlaceTetrisItem(TetrisItem tetrisItem)
+        public bool TryPlaceTetrisItem(TetrisItem tetrisItem)
         {
             if (tetrisItem.InventorySlotType == inventorySlotType)
             {
-                PlacedTetrisItem = tetrisItem;
-                tetrisItem.transform.SetParent(transform, false);
-                transform.GetChild(0).GetComponent<Image>().enabled = false;
-                tetrisItem.transform.SetPositionAndRotation(
-                    transform.GetChild(0).position,
-                        Quaternion.Euler(0, 0, 0));
-                tetrisItem.GetComponent<RectTransform>().sizeDelta = transform.GetComponent<RectTransform>().sizeDelta;
-                tetrisItem.SetSlotGridPanel(this);
-
+                PlaceTetrisItem(tetrisItem);
                 return true;
             }
             else
@@ -50,16 +50,30 @@ namespace ChosTIS
             }
         }
 
-        public void PickUpItem()
+        public void PlaceTetrisItem(TetrisItem tetrisItem)
         {
-            PlacedTetrisItem.RemoveSlotGridPanel();
-            PlacedTetrisItem = null;
+            RelatedTetrisItem = tetrisItem;
+            tetrisItem.transform.SetParent(transform, false);
+            transform.GetChild(0).GetComponent<Image>().enabled = false;
+            tetrisItem.transform.SetPositionAndRotation(
+                transform.GetChild(0).position,
+                    Quaternion.Euler(0, 0, 0));
+            tetrisItem.GetComponent<RectTransform>().sizeDelta = transform.GetComponent<RectTransform>().sizeDelta;
+            tetrisItem.TryGetItemComponent<GridPanelComponent>(out var gridPanelComponent);
+            gridPanelComponent.SetGridPanelParent(GridPanelParent);
+        }
+
+        public void RemoveTetrisItem()
+        {
+            RelatedTetrisItem.TryGetItemComponent<GridPanelComponent>(out var gridPanelComponent);
+            gridPanelComponent.SetGridPanelParent(RelatedTetrisItem.transform);
+            RelatedTetrisItem = null;
             transform.GetChild(0).GetComponent<Image>().enabled = true;
         }
 
         public bool HasItem()
         {
-            if (PlacedTetrisItem == null)
+            if (RelatedTetrisItem == null)
             {
                 return false;
             }

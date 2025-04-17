@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 9151442232930057024}
   m_Layer: 5
   m_Name: GP_Coat_WaistHanging
-  m_TagString: Untagged
+  m_TagString: GridPanel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -32,11 +32,11 @@ RectTransform:
   - {fileID: 4064218319456100287}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 140, y: 55}
-  m_Pivot: {x: 1, y: 1}
+  m_Pivot: {x: 0, y: 1}
 --- !u!1 &4492267585773927976
 GameObject:
   m_ObjectHideFlags: 0
@@ -49,7 +49,6 @@ GameObject:
   - component: {fileID: 5181489785131401322}
   - component: {fileID: 4791212172486302913}
   - component: {fileID: 374829027899504671}
-  - component: {fileID: 9175258616682753766}
   m_Layer: 5
   m_Name: p2
   m_TagString: TetrisGrid
@@ -130,21 +129,7 @@ MonoBehaviour:
   gridSizeHeight: 1
   rectTransform: {fileID: 0}
   canvas: {fileID: 0}
-  gridInteract: {fileID: 0}
---- !u!114 &9175258616682753766
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4492267585773927976}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2597ab0f4f8cc3f45bb05f18160c9ae4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
   inventoryManager: {fileID: 0}
-  tetrisItemGrid: {fileID: 374829027899504671}
 --- !u!1 &6889010335310047305
 GameObject:
   m_ObjectHideFlags: 0
@@ -157,7 +142,6 @@ GameObject:
   - component: {fileID: 7860538072398787697}
   - component: {fileID: 8732934070863688952}
   - component: {fileID: 7537746188141651366}
-  - component: {fileID: 6526444529411564198}
   m_Layer: 5
   m_Name: p1
   m_TagString: TetrisGrid
@@ -238,18 +222,4 @@ MonoBehaviour:
   gridSizeHeight: 1
   rectTransform: {fileID: 0}
   canvas: {fileID: 0}
-  gridInteract: {fileID: 0}
---- !u!114 &6526444529411564198
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6889010335310047305}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2597ab0f4f8cc3f45bb05f18160c9ae4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
   inventoryManager: {fileID: 0}
-  tetrisItemGrid: {fileID: 7537746188141651366}

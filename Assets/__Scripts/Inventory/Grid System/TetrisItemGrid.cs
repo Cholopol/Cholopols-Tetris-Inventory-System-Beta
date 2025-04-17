@@ -1,23 +1,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using static ChosTIS.Utilities;
 
 namespace ChosTIS
 {
-    public class TetrisItemGrid : MonoBehaviour
+    public class TetrisItemGrid : MonoBehaviour, IInventoryContainer, IPointerEnterHandler, IPointerExitHandler
     {
         private TetrisItem[,] itemSlot;
+        public TetrisItem RelatedTetrisItem { get; set; }
+        public Dictionary<int, TetrisItem> OwnerItemDic { get; set; } = new();
 
-        [Header("网格单元大小")]
+        [Header("Grid Unit Size")]
         public const float tileSizeWidth = 20;
         public const float tileSizeHeight = 20;
-        [Header("背包网格大小")]
+        [Header("Grid Size")]
         public int gridSizeWidth = 1;
         public int gridSizeHeight = 1;
-        [Header("相关组件")]
+        [Header("Component")]
         [SerializeField] private RectTransform rectTransform;
         [SerializeField] private Canvas canvas;
-        [SerializeField] private GridInteract gridInteract;
+        [SerializeField] private InventoryManager inventoryManager;
 
         // Calculate the position in the Grid panel
         private Vector2 positionOnTheGrid = new Vector2();
@@ -26,19 +30,34 @@ namespace ChosTIS
 
         private void Start()
         {
+            InstanceIDManager.Register(this);
+
             itemSlot = new TetrisItem[gridSizeWidth, gridSizeHeight];
 
             rectTransform = GetComponent<RectTransform>();
-            gridInteract = GetComponent<GridInteract>();
             canvas = FindObjectOfType<Canvas>();
+            inventoryManager = FindObjectOfType<InventoryManager>();
 
-            Init(gridSizeWidth, gridSizeHeight);
+            Initialize(gridSizeWidth, gridSizeHeight);
+        }
 
+        private void OnDestroy()
+        {
+            InstanceIDManager.Unregister(this);
+        }
 
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            inventoryManager.selectedTetrisItemGrid = this;
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            inventoryManager.selectedTetrisItemGrid = null;
         }
 
         //Resize Rect
-        public void Init(int width, int height)
+        private void Initialize(int width, int height)
         {
             Vector2 size = new Vector2(width * tileSizeWidth, height * tileSizeHeight);
             rectTransform.sizeDelta = size;
@@ -52,15 +71,64 @@ namespace ChosTIS
         /// <param name="posY"></param>
         /// <param name="overlapItem"></param>
         /// <returns></returns>
-        public bool PlaceTetrisItem(TetrisItem item, int posX, int posY, ref TetrisItem overlapItem)
+        public bool TryPlaceTetrisItem(TetrisItem item, int posX, int posY)
+        {
+            if (BoundryCheck(posX, posY, item.WIDTH, item.HEIGHT) == false) return false;
+            if (ValidPosCheck(item, posX, posY) == false) return false;
+            PlaceTetrisItem(item, posX, posY);
+
+            return true;
+        }
+
+        public bool TryPlaceTetrisItem(ref TetrisItem item, int posX, int posY, ref TetrisItem overlapItem)
         {
             //Determine if the item is out of bounds
             if (BoundryCheck(posX, posY, item.WIDTH, item.HEIGHT) == false) return false;
             //Check for overlapping items in the specified location and range. Multiple overlapping items have exited
             if (OverlapCheck(item, posX, posY, ref overlapItem) == false) return false;
+            if (overlapItem != null
+                && overlapItem.ItemDetails.itemID == item.ItemDetails.itemID
+                && item.ItemDetails.maxStack != 0)
+            {
+                //Debug.Log($"Stack {item.name} to {overlapItem.name}");
+                return PlaceOnOverlapItem(item, overlapItem);
+            }
+            if (ValidPosCheck(item, posX, posY) == false) return false;
             PlaceTetrisItem(item, posX, posY);
-
+            if (item != null)
+            {
+                item.SetItemData(item.GetInstanceID());
+                item.CurrentInventoryContainer = this;
+                item.GetComponent<Image>().raycastTarget = true;
+                item = null;
+            }
             return true;
+        }
+
+        public bool PlaceOnOverlapItem(TetrisItem item, TetrisItem overlapltem)
+        {
+            if (Utilities.TetrisItemUtilities.TryStackItems(overlapltem, item))
+            {
+                item.SetItemData(item.GetInstanceID());
+                overlapltem.SetItemData(overlapltem.GetInstanceID());
+                item.TryGetItemComponent<StackableComponent>(out StackableComponent stackableComponent);
+                if (stackableComponent.CurrentStack <= 0)
+                {
+                    TetrisItemGrid otherGrid = (TetrisItemGrid)item.CurrentInventoryContainer;
+                    otherGrid.RemoveTetrisItem(item,
+                    item.onGridPositionX,
+                    item.onGridPositionY,
+                    item.RotationOffset,
+                    item.TetrisPieceShapePos);
+                    item.RemoveItemData(item.GetInstanceID());
+                    Destroy(item.gameObject);
+                    Utilities.TetrisItemUtilities.TriggerPointerEnter(overlapltem.gameObject);
+                }
+                return true;
+            }
+
+            else
+                return false;
         }
 
         //Add items according to grid coordinates
@@ -74,38 +142,45 @@ namespace ChosTIS
             }
             List<Vector2Int> tetrisPieceShapePos = item.TetrisPieceShapePos;
 
-            item.transform.rotation = Quaternion.Euler(0, 0, -Utilities.RotationHelper.GetRotationAngle(item.Dir));
+            item.transform.rotation = Quaternion.Euler(0, 0, -RotationHelper.GetRotationAngle(item.Dir));
 
             //Occupy the corresponding size of the grid according to the size of the item
             foreach (Vector2Int v2i in tetrisPieceShapePos)
             {
-
                 itemSlot[posX + v2i.x + item.RotationOffset.x, posY + v2i.y + item.RotationOffset.y] = item;
             }
 
             item.onGridPositionX = posX;
             item.onGridPositionY = posY;
             item.transform.localPosition = CalculatePositionOnGrid(item, posX, posY);
+            if (!OwnerItemDic.ContainsKey(item.GetInstanceID()))
+            {
+                OwnerItemDic.Add(item.GetInstanceID(), item);
+                //Debug.Log($"Add {item.name} to {name}");
+            }
         }
 
         //Get items by grid coordinates
-        public TetrisItem PickUpItem(int x, int y, Vector2Int oldRotationOffset, List<Vector2Int> tetrisItemGrids)
+        public TetrisItem RemoveTetrisItem(TetrisItem toReturn, int x, int y, Vector2Int oldRotationOffset, List<Vector2Int> tetrisPieceShapePositions)
         {
-            TetrisItem toReturn = itemSlot[x + tetrisItemGrids[0].x + oldRotationOffset.x,
-                y + tetrisItemGrids[0].y + oldRotationOffset.y];
             if (toReturn == null) return null;
-            CleanGridReference(x, y, oldRotationOffset, tetrisItemGrids);
+            CleanGridReference(x, y, oldRotationOffset, tetrisPieceShapePositions);
+            if (OwnerItemDic.ContainsKey(toReturn.GetInstanceID()))
+            {
+                OwnerItemDic.Remove(toReturn.GetInstanceID());
+                //Debug.Log($"Remove {toReturn.name} from {name}");
+            }
             return toReturn;
         }
 
         //Unoccupy the corresponding size of the grid by item size
-        void CleanGridReference(int startColumn, int startRow, Vector2Int oldRotationOffset, List<Vector2Int> tetrisItemGrids)
+        private void CleanGridReference(int startColumn, int startRow, Vector2Int oldRotationOffset, List<Vector2Int> tetrisItemGrids)
         {
             //Check starting coordinates and item dimensions for out-of-bounds
             if (startRow < 0 || startRow >= gridSizeHeight ||
                 startColumn < 0 || startColumn >= gridSizeWidth)
             {
-                Debug.LogError($"起始坐标 ({startRow}, {startColumn}) 无效");
+                Debug.LogError($"Starting coordinates ({startRow}, {startColumn}) invalid");
                 return;
             }
 
@@ -138,10 +213,21 @@ namespace ChosTIS
                         }
                     }
                 }
-
             }
 
             //Return true if all the locations being checked have the same overlapping items
+            return true;
+        }
+
+        private bool ValidPosCheck(TetrisItem item, int posX, int posY)
+        {
+            foreach (Vector2Int v2i in item.TetrisPieceShapePos)
+            {
+                if (itemSlot[posX + v2i.x + item.RotationOffset.x, posY + v2i.y + item.RotationOffset.y] != null)
+                {
+                    return false;
+                }
+            }
             return true;
         }
 
@@ -162,7 +248,6 @@ namespace ChosTIS
 
             return tileGridPosition;
         }
-
 
         /// <summary>
         /// Determine if the item is out of bounds
@@ -229,6 +314,11 @@ namespace ChosTIS
         {
             if (itemSlot[x, y] == null) return false;
             return true;
+        }
+
+        public PersistentGridIdentification GetPersistentGridIdentification()
+        {
+            return transform.GetComponent<PersistentGridIdentification>();
         }
     }
 }

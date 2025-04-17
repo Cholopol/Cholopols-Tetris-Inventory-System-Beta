@@ -1,3 +1,4 @@
+using ChosTIS.Utility;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,8 +9,7 @@ namespace ChosTIS
     {
         [SerializeField] RectTransform highlighter;
         [SerializeField] private GameObject highlightTilePrefab;
-        [SerializeField] private TilePool tilePool;
-        private List<GameObject> activeTiles = new List<GameObject>();
+        private List<GameObject> activeTiles = new();
 
         public void UpdateShapeHighlight(TetrisItemGhost ghost, Vector2Int originPos, TetrisItemGrid selectedTetrisItemGrid)
         {
@@ -22,7 +22,7 @@ namespace ChosTIS
                     continue;
 
                 Vector2 tilePos = selectedTetrisItemGrid.CalculateTilePosition(ghost, point.x, point.y);
-                GameObject tile = tilePool.GetTile();
+                GameObject tile = PoolManager.Instance.GetObject(highlightTilePrefab);
                 SetColor(tile, selectedTetrisItemGrid, actualPos);
                 tile.transform.SetParent(highlighter);
                 tile.transform.localScale = Vector3.one;
@@ -35,7 +35,7 @@ namespace ChosTIS
         {
             foreach (var tile in activeTiles)
             {
-                tilePool.ReturnTile(tile);
+                PoolManager.Instance.PushObject(tile);
             }
             activeTiles.Clear();
         }
@@ -67,9 +67,18 @@ namespace ChosTIS
 
         private void SetColor(GameObject tile, TetrisItemGrid targetGrid, Vector2Int tileOnGridPos)
         {
+            TetrisItem tetrisItem = targetGrid.GetTetrisItem(tileOnGridPos.x, tileOnGridPos.y);
             if (targetGrid.HasItem(tileOnGridPos.x, tileOnGridPos.y))
             {
-                tile.GetComponent<Image>().color = new Color(1f, 0f, 0f, 100f / 255f);
+                if (tetrisItem.ItemDetails.maxStack > 0
+                    && TetrisItemMediator.Instance.GetTetrisItemGhost().selectedTetrisItem.ItemDetails.itemID == tetrisItem.ItemDetails.itemID)
+                {
+                    tile.GetComponent<Image>().color = new Color(1f, 1f, 0f, 100f / 255f);
+                }
+                else
+                {
+                    tile.GetComponent<Image>().color = new Color(1f, 0f, 0f, 100f / 255f);
+                }
             }
             else
             {

@@ -21,8 +21,14 @@ public enum Dir
 
 public enum InventorySlotType
 {
-    Pocket, Coat, Chesthanging, BackPack, WaistHanging, Coffer,
+    Pocket, Coat, Chesthanging, BackPack, WaistHanging, Coffer, Depository,
     LongWeapon, ShortWeapon, LargeConsume, MiddleConsume, SmallConsume
+}
+
+public enum PersistentGridType
+{
+    None,
+    Pocket, Coffer, Depository
 }
 
 public enum PlaceState

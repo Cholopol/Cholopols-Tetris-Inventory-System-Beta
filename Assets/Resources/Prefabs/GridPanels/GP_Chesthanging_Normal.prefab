@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 4732010019740569158}
   - component: {fileID: 7938153203376804649}
   - component: {fileID: 6414843810042324205}
-  - component: {fileID: 1929137182455548513}
   m_Layer: 5
   m_Name: p5
   m_TagString: TetrisGrid
@@ -93,21 +92,7 @@ MonoBehaviour:
   gridSizeHeight: 2
   rectTransform: {fileID: 0}
   canvas: {fileID: 0}
-  gridInteract: {fileID: 0}
---- !u!114 &1929137182455548513
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 325839997588865834}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2597ab0f4f8cc3f45bb05f18160c9ae4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
   inventoryManager: {fileID: 0}
-  tetrisItemGrid: {fileID: 6414843810042324205}
 --- !u!1 &1675552385453023429
 GameObject:
   m_ObjectHideFlags: 0
@@ -120,7 +105,6 @@ GameObject:
   - component: {fileID: 6837870683064424057}
   - component: {fileID: 4461963532980552498}
   - component: {fileID: 2443531157157744638}
-  - component: {fileID: 5074533327764734656}
   m_Layer: 5
   m_Name: p3
   m_TagString: TetrisGrid
@@ -201,21 +185,7 @@ MonoBehaviour:
   gridSizeHeight: 1
   rectTransform: {fileID: 0}
   canvas: {fileID: 0}
-  gridInteract: {fileID: 0}
---- !u!114 &5074533327764734656
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1675552385453023429}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2597ab0f4f8cc3f45bb05f18160c9ae4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
   inventoryManager: {fileID: 0}
-  tetrisItemGrid: {fileID: 2443531157157744638}
 --- !u!1 &1880510301500347877
 GameObject:
   m_ObjectHideFlags: 0
@@ -228,7 +198,6 @@ GameObject:
   - component: {fileID: 872326372500297581}
   - component: {fileID: 2717483008714790163}
   - component: {fileID: 6653327957275989214}
-  - component: {fileID: 3296413424804846690}
   m_Layer: 5
   m_Name: p4
   m_TagString: TetrisGrid
@@ -309,21 +278,7 @@ MonoBehaviour:
   gridSizeHeight: 2
   rectTransform: {fileID: 0}
   canvas: {fileID: 0}
-  gridInteract: {fileID: 0}
---- !u!114 &3296413424804846690
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1880510301500347877}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2597ab0f4f8cc3f45bb05f18160c9ae4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
   inventoryManager: {fileID: 0}
-  tetrisItemGrid: {fileID: 6653327957275989214}
 --- !u!1 &4293010120465109148
 GameObject:
   m_ObjectHideFlags: 0
@@ -335,7 +290,7 @@ GameObject:
   - component: {fileID: 1543471118029654277}
   m_Layer: 5
   m_Name: GP_Chesthanging_Normal
-  m_TagString: Untagged
+  m_TagString: GridPanel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -359,11 +314,11 @@ RectTransform:
   - {fileID: 700711561645822314}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 140, y: 85}
-  m_Pivot: {x: 1, y: 1}
+  m_Pivot: {x: 0, y: 1}
 --- !u!1 &5267730439656810945
 GameObject:
   m_ObjectHideFlags: 0
@@ -376,7 +331,6 @@ GameObject:
   - component: {fileID: 1645710600049263016}
   - component: {fileID: 227924751988007286}
   - component: {fileID: 1647935871105430211}
-  - component: {fileID: 6681894556668664130}
   m_Layer: 5
   m_Name: p2
   m_TagString: TetrisGrid
@@ -457,21 +411,7 @@ MonoBehaviour:
   gridSizeHeight: 2
   rectTransform: {fileID: 0}
   canvas: {fileID: 0}
-  gridInteract: {fileID: 0}
---- !u!114 &6681894556668664130
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5267730439656810945}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2597ab0f4f8cc3f45bb05f18160c9ae4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
   inventoryManager: {fileID: 0}
-  tetrisItemGrid: {fileID: 1647935871105430211}
 --- !u!1 &8800829076798767746
 GameObject:
   m_ObjectHideFlags: 0
@@ -484,7 +424,6 @@ GameObject:
   - component: {fileID: 402062774417418964}
   - component: {fileID: 7518599019317474978}
   - component: {fileID: 3276850234815689436}
-  - component: {fileID: 518939849440146153}
   m_Layer: 5
   m_Name: p1
   m_TagString: TetrisGrid
@@ -565,18 +504,4 @@ MonoBehaviour:
   gridSizeHeight: 1
   rectTransform: {fileID: 0}
   canvas: {fileID: 0}
-  gridInteract: {fileID: 0}
---- !u!114 &518939849440146153
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8800829076798767746}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2597ab0f4f8cc3f45bb05f18160c9ae4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
   inventoryManager: {fileID: 0}
-  tetrisItemGrid: {fileID: 3276850234815689436}

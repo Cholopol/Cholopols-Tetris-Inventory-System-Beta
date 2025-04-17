@@ -6,7 +6,6 @@ public class ItemDetails
 {
     public int itemID;
     public string itemName;
-    //public ItemType itemType;
     public string itemDescription;
 
     public GameObject itemEntity;
@@ -19,7 +18,7 @@ public class ItemDetails
     public Transform gridUIPrefab;
     public InventorySlotType inventorySlotType;
     public int itemDamage;
-    public int load;    //容量
+    public int maxStack;
     public float reloadTime;
 
     public int yHeight;
@@ -28,7 +27,6 @@ public class ItemDetails
     public Dir dir;
 
     public int itemPrice;
-    //售出时的折扣百分比
     [Range(0f, 1f)]
     public float sellPercentage;
     
@@ -40,4 +38,26 @@ public class PointSet
     public int itemShapeID;
     public TetrisPieceShape tetrisPieceShape;
     public List<Vector2Int> points;
+}
+
+[System.Serializable]
+public class GameSaveData
+{
+    public Dictionary<string, List<GridItem>> inventoryDict;
+    public Dictionary<string, string> gameSaveTimeDict;
+}
+
+[System.Serializable]
+public class GridItem
+{
+    public int itemID;
+    public int itemIndex;
+    public int parentItemIndex;
+    public int gridPIndex;
+    public int persistentGridTypeIndex;
+    public bool isParent;
+    public bool isOnSlot;
+    public Vector2Int orginPosition;
+    public Dir direction;
+    public int stack;
 }

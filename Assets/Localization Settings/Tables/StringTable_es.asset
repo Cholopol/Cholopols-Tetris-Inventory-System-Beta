@@ -19,24 +19,30 @@ MonoBehaviour:
     m_Items: []
   m_TableData:
   - m_Id: 109809545216
-    m_Localized: "Controles de teclado\r\n\uF06C\tQ: Generar \xEDtem para colocar;
-      clic continuo cambia al siguiente\r\n\uF06C\tR: Rotar \xEDtem\r\n\uF06C\tBot\xF3n
-      izquierdo del rat\xF3n\u3000\u3000\r\n\t-- Clic en panel de grilla tras generar
-      con Q para colocar\u3000\u3000\r\n\t-- Mantener presionado para arrastrar,
-      soltar para ubicar\r\nCrear nuevo \xEDtem\r\n\uF06C\tUsar ItemEditor para creaci\xF3n
-      optimizada\r\n\uF06C\tMen\xFA Optional es opcional; otros campos obligatorios\r\n\uF06C\tAseg\xFArate
-      de que la opci\xF3n \"Lectura/Escritura\" est\xE9 habilitada para el Sprite
-      del Tetris Item\n\tConfiguraci\xF3n de GridUIPrefab\u3000\u3000\r\n\t-- Duplicar
-      GP_Template en jerarqu\xEDa para personalizar panel de inventario\u3000\u3000\r\n\t--
-      Asegurar que la altura de GP_Template muestre correctamente la grilla (afecta
-      el scroll)\r\nConfiguraci\xF3n de grilla\r\n\uF06C\tNota: Asignar etiqueta
-      \"TetrisGrid\" a todos los objetos Grid\r\n\uF06C\tA\xF1adir scripts TetrisItemGrid
-      y GridInteract a Image UI\r\n\uF06C\tDefinir GridSizeWidth y GridSizeHeight
-      para dimensiones\r\nConfiguraci\xF3n de slots\r\n\uF06C\tNota: Asignar etiqueta
-      \"TetrisSlot\" a todos los objetos Slot\r\nCrear nueva forma Tetris\r\n\uF06C\tNombrar
-      forma en el enum TetrisShapePos del script Enums\r\n\uF06C\tA\xF1adir forma
-      en GameData/TetrisItemPointSet_SO\r\n\uF06C\tCon esquina superior izquierda
-      como origen (0,0), ingresar coordenadas en lista points\r\n"
+    m_Localized: ">Operaci\xF3n de tecla\r\n->>Q genera elementos para colocar, contin\xFAe
+      haciendo clic para cambiar al siguiente\r\n->>R Girar elemento\r\n->>Bot\xF3n
+      del rat\xF3n 0\r\n-->>>Presione Q para generar el elemento y luego haga clic
+      en el panel de cuadr\xEDcula con el bot\xF3n izquierdo del mouse para colocar
+      el elemento\r\n-->>> Mantenga presionado el bot\xF3n izquierdo del mouse para
+      comenzar a arrastrar el objeto de destino y suelte el bot\xF3n izquierdo del
+      mouse para colocar el objeto.\r\n->>Bot\xF3n del rat\xF3n 1\r\n-->>>Ver el
+      men\xFA de elementos para el siguiente paso\r\n\r\n>Crear nuevos elementos\r\n->>Utilice
+      ItemEditor para crear mejor\r\n->>Los elementos del men\xFA opcionales son
+      opcionales, los dem\xE1s son obligatorios\r\n->> Aseg\xFArate de que la opci\xF3n
+      \"Leer/Escribir\" para el Sprite del elemento de Tetris est\xE9 marcada\r\n->>Creaci\xF3n
+      de GridUIPrefab\r\n-->>>Copie GP_Template en la jerarqu\xEDa para crear un
+      panel de mochila personalizado.\r\n-->>> Aseg\xFArese de que el valor de altura
+      de GP_Template pueda mostrar correctamente el panel de cuadr\xEDcula, lo cual
+      est\xE1 relacionado con si la vista de desplazamiento puede configurar correctamente
+      la altura adecuada\r\n\r\n>Configuraci\xF3n de cuadr\xEDcula\r\n->>Agregue
+      scripts TetrisItemGrid y GridInteract a la interfaz de usuario de imagen para
+      crear una cuadr\xEDcula de Tetris\r\n->>Establezca GridSizeWidth y GridSizeHeight
+      para establecer el tama\xF1o de la cuadr\xEDcula\r\n\r\n> Crea nuevas formas
+      de Tetris\r\n->>Nombra la nueva forma en TetrisShapePos del script Enums\r\n->>Agregar
+      nuevas formas en GameData/TetrisItemPointSet_SO\r\n->>Establezca la esquina
+      superior izquierda como origen, las coordenadas como (0,0), complete las coordenadas
+      de los puntos del sistema de coordenadas de la cuadr\xEDcula de cualquier forma
+      en la lista de puntos y aseg\xFArese de que el valor sea un entero positivo."
     m_Metadata:
       m_Items: []
   references:

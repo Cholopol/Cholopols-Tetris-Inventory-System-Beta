@@ -1,23 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace ChosTIS
 {
     public class InventoryManager : Singleton<InventoryManager>
     {
-        [SerializeField] private bool onDebugMode = false;
-        [Header("当前背包")]
+        [Header("Current Tetris Item Grid")]
         public TetrisItemGrid selectedTetrisItemGrid;
-        [Header("物品数据")]
+        [Header("Tetris Item Details Data")]
         public ItemDataList_SO itemDataList_SO;
-        [Header("Tetris点集数据")]
+        [Header("Tetris Item Points Set Data")]
         public TetrisItemPointSet_SO tetrisItemPointSet_SO;
-        [Header("组件配置")]
+        [Header("Depository")]
+        public TetrisItemGrid depositoryGrid;
+        [Header("Components")]
         [SerializeField] private Canvas canvas;
         [SerializeField] private InventoryHighlight inventoryHighlight;
-        public TetrisItemGhost tetrisItemGhost;
+        [SerializeField] private TetrisItemGhost tetrisItemGhost;
+        [SerializeField] private RightClickMenuPanel rightClickMenuPanel;
         public TetrisItem selectedTetrisItem;
         public Vector2Int tileGridOriginPosition;
 
@@ -30,7 +33,6 @@ namespace ChosTIS
             //[Debug] Dynamically add items randomly
             if (Input.GetKeyDown(KeyCode.Q))
             {
-                onDebugMode = true;
                 if (selectedItemIndex >= itemDataList_SO.itemDetailsList.Count)
                 {
                     selectedItemIndex = 0;
@@ -47,27 +49,35 @@ namespace ChosTIS
             //Rotating item
             if (Input.GetKeyDown(KeyCode.R))
             {
+                oldPosition = new();
                 RotateItemGhost();
             }
+
             //Pick up item UI location
-            if (selectedTetrisItem && onDebugMode) selectedTetrisItem.transform.position = Input.mousePosition;
-            if (selectedTetrisItemGrid == null)
-            {
-                inventoryHighlight.Show(false);
-                return;
-            }
+            if (selectedTetrisItem) selectedTetrisItem.transform.position = Input.mousePosition;
 
             if (Input.GetMouseButtonDown(0))
             {
-                //Gets the grid coordinates of the current mouse position in the grid and prints it to the console
-                Vector2Int tileGridOriginPosition = GetTileGridOriginPosition();
-                if (selectedTetrisItem == null && !selectedTetrisItemGrid.HasItem(tileGridOriginPosition.x, tileGridOriginPosition.y)) return;
-                if (selectedTetrisItem != null) PlaceItem(tileGridOriginPosition);
-                selectedItemIndex = 0;
+                TetrisItemGrid tetrisItemGrid = GetGridUnderMouse();
+                if (tetrisItemGrid != null)
+                {
+                    //Gets the grid coordinates of the current mouse position in the grid and prints it to the console
+                    Vector2Int tileGridOriginPosition = GetTileGridOriginPosition(tetrisItemGrid);
+                    if (selectedTetrisItem == null)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        PlaceItem(tileGridOriginPosition, tetrisItemGrid);
+                        selectedItemIndex = 0;
+                    }
+
+                }
 
             }
 
-            HandleHighlight();
+            HandleHighlight(selectedTetrisItemGrid != null);
         }
 
         /// <summary>
@@ -96,38 +106,35 @@ namespace ChosTIS
             Vector2 origin = Input.mousePosition;
             if (tetrisItemGhost.ItemDetails != null)
             {
-                //计算物品原点位置
                 origin.x -= (tetrisItemGhost.WIDTH - 1) * TetrisItemGrid.tileSizeWidth / 2;
                 origin.y += (tetrisItemGhost.HEIGHT - 1) * TetrisItemGrid.tileSizeHeight / 2;
             }
             Vector2Int tileGridPosition = selectedTetrisItemGrid.GetTileGridPosition(origin);
-            //Debug.Log(tileGridPosition);
             return tileGridPosition;
         }
 
         /// <summary>
-        /// [Debug]Gets the origin grid coordinates of the TetrisItem and returns the mouse location grid coordinates if the item is not picked up
+        /// Gets the origin grid coordinates of the TetrisItem and returns the mouse location grid coordinates if the item is not picked up
         /// </summary>
         /// <returns></returns>
-        private Vector2Int GetTileGridOriginPosition()
+        private Vector2Int GetTileGridOriginPosition(TetrisItemGrid tetrisItemGrid)
         {
             Vector2 origin = Input.mousePosition;
             if (selectedTetrisItem != null)
             {
-                //计算物品原点位置
                 origin.x -= (selectedTetrisItem.WIDTH - 1) * TetrisItemGrid.tileSizeWidth / 2;
                 origin.y += (selectedTetrisItem.HEIGHT - 1) * TetrisItemGrid.tileSizeHeight / 2;
             }
-            Vector2Int tileGridPosition = selectedTetrisItemGrid.GetTileGridPosition(origin);
+            Vector2Int tileGridPosition = tetrisItemGrid.GetTileGridPosition(origin);
             return tileGridPosition;
         }
 
-        public void HandleHighlight()
+        private void HandleHighlight(bool isShow)
         {
             Vector2Int positionOnGrid = GetGhostTileGridOriginPosition();
             if (oldPosition == positionOnGrid) return;
             oldPosition = positionOnGrid;
-            if (tetrisItemGhost.OnDragging)
+            if (tetrisItemGhost.OnDragging && isShow)
             {
                 inventoryHighlight.Show(true);
                 inventoryHighlight.UpdateShapeHighlight(tetrisItemGhost, positionOnGrid, selectedTetrisItemGrid);
@@ -143,44 +150,111 @@ namespace ChosTIS
         }
 
         /// <summary>
-        /// Place Tetris Item
+        /// Drag Drop to Place Tetris Item
         /// </summary>
         /// <param name="tileGridOriginPosition"></param>
-        public void PlaceGhostItem(Vector2Int tileGridOriginPosition, TetrisItemGrid targetGrid)
+        public void PlaceGhostItem(Vector2Int tileGridOriginPosition, TetrisItem tetrisItem, TetrisItemGrid targetGrid, InventorySlot fromSlot)
         {
             if (targetGrid == null) return;
-            bool isDone = targetGrid.PlaceTetrisItem(tetrisItemGhost.selectedTetrisItem, tileGridOriginPosition.x, tileGridOriginPosition.y, ref overlapItem);
-            //if (isDone)
-            //{
-            //    if (overlapItem != null)
-            //    {
+            bool isDone = targetGrid.TryPlaceTetrisItem(tetrisItem, tileGridOriginPosition.x, tileGridOriginPosition.y);
+            StartCoroutine(PlaceChildItem(tetrisItem, targetGrid, fromSlot));
 
-            //    }
-            //}
-            //else
-            //{
-
-            //}
         }
 
-        //[Debug Mode]Moving items
-        public void PlaceItem(Vector2Int tileGridOriginPosition)
+        /// <summary>
+        /// Programmatic place item
+        /// </summary>
+        /// <param name="tileGridOriginPosition"></param>
+        private void PlaceItem(Vector2Int tileGridOriginPosition, IInventoryContainer container)
         {
-            if (selectedTetrisItemGrid == null) return;
-            bool isDone = selectedTetrisItemGrid.PlaceTetrisItem(selectedTetrisItem, tileGridOriginPosition.x, tileGridOriginPosition.y, ref overlapItem);
+            if (container == null) return;
+            TetrisItemGrid tetrisItemGrid = container as TetrisItemGrid;
+            bool isDone = tetrisItemGrid.TryPlaceTetrisItem(
+                ref selectedTetrisItem,
+                tileGridOriginPosition.x, 
+                tileGridOriginPosition.y, 
+                ref overlapItem);
+            overlapItem = null;
+        }
 
-            if (isDone)
+        /// <summary>
+        /// Place sub items in the activity backpack, nested items are not allowed in inventory
+        /// </summary>
+        /// <param name="parentItem"></param>
+        /// <param name="targetGrid"></param>
+        /// <returns></returns>
+        private IEnumerator PlaceChildItem(TetrisItem parentItem, TetrisItemGrid targetGrid, InventorySlot fromSlot)
+        {
+            if (!parentItem.TryGetItemComponent<GridPanelComponent>(out GridPanelComponent gridPanel)) yield break;
+            if (gridPanel.TetrisItemGrids.Count > 0)
             {
-                selectedTetrisItem.GetComponent<Image>().raycastTarget = true;
-                selectedTetrisItem = null;
-                if (overlapItem != null)
+                foreach (TetrisItemGrid fromGrid in gridPanel.TetrisItemGrids)
                 {
-                    selectedTetrisItem = overlapItem;
-                    overlapItem = null;
-                    selectedTetrisItem.transform.SetAsLastSibling();
+                    if (fromGrid.OwnerItemDic.Count > 0)
+                    {
+                        bool isDone = false;
+                        Dictionary<int, TetrisItem> _ownerItemDic = new(fromGrid.OwnerItemDic);
+                        foreach (TetrisItem item in _ownerItemDic.Values)
+                        {
+                            int _itemPosX = item.onGridPositionX;
+                            int _itemPosY = item.onGridPositionY;
+                            Vector2Int _rotationOffset = item.RotationOffset;
+                            List<Vector2Int> _tetrisPieceShapePos = item.TetrisPieceShapePos;
+                            for (int row = 0; row < targetGrid.gridSizeHeight; row++)
+                            {
+                                for (int column = 0; column < targetGrid.gridSizeWidth; column++)
+                                {
+                                    isDone = targetGrid.TryPlaceTetrisItem(item, column, row);
+                                    if (isDone)
+                                    {
+                                        fromGrid.RemoveTetrisItem(item, _itemPosX, _itemPosY, _rotationOffset, _tetrisPieceShapePos);
+                                        item.CurrentInventoryContainer = targetGrid;
+                                        item.SetItemData(item.GetInstanceID());
+                                        break;
+                                    }
+                                }
+                                if (isDone)
+                                {
+                                    break;
+                                }
+                            }
+                            if (!isDone)
+                            {
+                                Debug.Log("Nesting items is not allowed in inventory");
+                                targetGrid.RemoveTetrisItem(parentItem, parentItem.onGridPositionX, parentItem.onGridPositionY, parentItem.RotationOffset, parentItem.TetrisPieceShapePos);
+                                ResetParent(parentItem, fromSlot);
+                                break;
+                            }
+                            yield return null;
+                        }
+                        if (!isDone) break;
+                    }
+                    yield return null;
                 }
             }
-            onDebugMode = false;
+        }
+
+        private void ResetParent(TetrisItem parentItem, InventorySlot fromSlot)
+        {
+            if (parentItem.CurrentInventoryContainer as InventorySlot == null)
+            {
+                fromSlot.PlaceTetrisItem(parentItem);
+                parentItem.CurrentInventoryContainer = fromSlot;
+                parentItem.SetItemData(parentItem.GetInstanceID());
+            }
+        }
+
+        public StackableComponent CreateNewStackableItem(int itemID)
+        {
+            if (selectedTetrisItem) return null;
+            selectedTetrisItem = Instantiate(itemDataList_SO.GetItemDetailsByID(itemID).uiPrefab).GetComponent<TetrisItem>();
+            selectedTetrisItem.transform.SetParent(canvas.transform, false);
+            selectedTetrisItem.transform.SetAsLastSibling();
+            selectedTetrisItem.GetComponent<Image>().raycastTarget = false;
+            TetrisItemGrid tetrisItemGrid = rightClickMenuPanel._currentItem.GetComponentInParent<TetrisItemGrid>();
+            selectedTetrisItem.Initialize(itemDataList_SO.GetItemDetailsByID(itemID), null, tetrisItemGrid);
+            selectedTetrisItem.TryGetItemComponent<StackableComponent>(out var stackableComponent);
+            return stackableComponent;
         }
 
         //Add random items
@@ -191,33 +265,29 @@ namespace ChosTIS
             selectedTetrisItem = Instantiate(itemDataList_SO.GetItemDetailsByIndex(selectedItemIndex).uiPrefab).GetComponent<TetrisItem>();
             selectedTetrisItem.transform.SetParent(canvas.transform, false);
             selectedTetrisItem.transform.SetAsLastSibling();
-            selectedTetrisItem.Set(itemDataList_SO.itemDetailsList[selectedItemIndex]);
+            selectedTetrisItem.GetComponent<Image>().raycastTarget = false;
+            selectedTetrisItem.Initialize(itemDataList_SO.itemDetailsList[selectedItemIndex], null, selectedTetrisItemGrid);
         }
 
-        public int GetTetrisShapeIndex(TetrisPieceShape shape)
+        private TetrisItemGrid GetGridUnderMouse()
         {
-            return shape switch
+            PointerEventData eventData = new PointerEventData(EventSystem.current)
             {
-                TetrisPieceShape.Frame => 0,
-                TetrisPieceShape.Domino => 1,
-                TetrisPieceShape.Tromino_I => 2,
-                TetrisPieceShape.Tromino_L => 3,
-                TetrisPieceShape.Tromino_J => 4,
-                TetrisPieceShape.Tetromino_I => 5,
-                TetrisPieceShape.Tetromino_O => 6,
-                TetrisPieceShape.Tetromino_T => 7,
-                TetrisPieceShape.Tetromino_J => 8,
-                TetrisPieceShape.Tetromino_L => 9,
-                TetrisPieceShape.Tetromino_S => 10,
-                TetrisPieceShape.Tetromino_Z => 11,
-                TetrisPieceShape.Pentomino_I => 12,
-                TetrisPieceShape.Pentomino_L => 13,
-                TetrisPieceShape.Pentomino_J => 14,
-                TetrisPieceShape.Pentomino_U => 15,
-                TetrisPieceShape.Pentomino_T => 16,
-                TetrisPieceShape.Pentomino_P => 17,
-                _ => throw new System.ArgumentOutOfRangeException(nameof(shape), shape, null),
+                position = Input.mousePosition
             };
+
+            List<RaycastResult> results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventData, results);
+
+            foreach (RaycastResult result in results)
+            {
+                if (result.gameObject.CompareTag("TetrisGrid"))
+                {
+                    return result.gameObject.GetComponent<TetrisItemGrid>();
+                }
+            }
+
+            return null;
         }
 
     }

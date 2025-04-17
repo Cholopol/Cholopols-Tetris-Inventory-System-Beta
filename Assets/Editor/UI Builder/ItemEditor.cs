@@ -186,10 +186,10 @@ public class ItemEditor : EditorWindow
             activeItem.itemDamage = evt.newValue;
         });
 
-        itemDetailsSection.Q<IntegerField>("Load").value = activeItem.load;
-        itemDetailsSection.Q<IntegerField>("Load").RegisterValueChangedCallback(evt =>
+        itemDetailsSection.Q<IntegerField>("MaxStack").value = activeItem.maxStack;
+        itemDetailsSection.Q<IntegerField>("MaxStack").RegisterValueChangedCallback(evt =>
         {
-            activeItem.load = evt.newValue;
+            activeItem.maxStack = evt.newValue;
         });
 
         itemDetailsSection.Q<FloatField>("ReloadTime").value = activeItem.reloadTime;

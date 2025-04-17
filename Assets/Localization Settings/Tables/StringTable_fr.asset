@@ -19,27 +19,30 @@ MonoBehaviour:
     m_Items: []
   m_TableData:
   - m_Id: 109809545216
-    m_Localized: "Commandes clavier\r\n\uF06C\tQ : G\xE9n\xE9rer un objet \xE0 placer
-      ; cliquer \xE0 nouveau pour permuter\r\n\uF06C\tR : Faire pivoter l'objet\r\n\uF06C\tBouton
-      gauche de la souris\u3000\u3000\r\n\t-- Cliquer sur le panneau de grille apr\xE8s
-      g\xE9n\xE9ration avec Q pour placer\u3000\u3000\r\n\t-- Maintenir le clic pour
-      d\xE9placer l'objet, rel\xE2cher pour confirmer\r\nCr\xE9er un nouvel objet\r\n\uF06C\tUtiliser
-      ItemEditor pour une cr\xE9ation optimis\xE9e\r\n\uF06C\tMenu Optional est facultatif
-      ; autres \xE9l\xE9ments obligatoires\r\n\uF06C\tV\xE9rifiez que l'option \xAB
-      Lecture/\xC9criture \xBB est activ\xE9e pour le Sprite du Tetris Item\n\tCr\xE9ation
-      de GridUIPrefab\u3000\u3000\r\n\t-- Copier GP_Template dans la hi\xE9rarchie
-      pour personnaliser le panneau d'inventaire\u3000\u3000\r\n\t-- V\xE9rifier
-      que la hauteur de GP_Template affiche correctement la grille, cruciale pour
-      le d\xE9filement\r\nParam\xE8tres de grille\r\n\uF06C\tNote : Attribuez le
-      tag \"TetrisGrid\" \xE0 tous les objets Grid\r\n\uF06C\tAjoutez les scripts
-      TetrisItemGrid et GridInteract \xE0 l'UI Image pour cr\xE9er une grille Tetris\r\n\uF06C\tD\xE9finissez
-      GridSizeWidth et GridSizeHeight pour ajuster la taille\r\nConfiguration des
-      emplacements\r\n\uF06C\tNote : Attribuez le tag \"TetrisSlot\" \xE0 tous les
-      objets Slot\r\nCr\xE9er une nouvelle forme Tetris\r\n\uF06C\tNommez la forme
-      dans l'enum TetrisShapePos du script Enums\r\n\uF06C\tAjoutez la forme dans
-      GameData/TetrisItemPointSet_SO\r\n\uF06C\tAvec le coin sup\xE9rieur gauche
-      comme origine (0,0), saisissez les coordonn\xE9es de la forme dans la liste
-      points\r\n"
+    m_Localized: "> op\xE9ration cl\xE9\n- > > q g\xE9n\xE8re l'article \xE0 placer,
+      continuer \xE0 appuyer basculera vers le suivant\n- > > r rotation des objets\n-
+      > > mouse button 0\n- - > > > cliquez avec le bouton gauche de la souris sur
+      le panneau de grille pour placer les articles apr\xE8s avoir appuy\xE9 sur
+      Q\n- - > > > bouton gauche de la souris maintenez enfonc\xE9 l'\xE9l\xE9ment
+      cible pour commencer \xE0 glisser, rel\xE2chez le bouton gauche de la souris
+      pour placer l'\xE9l\xE9ment\n- > > mouse button 1\n- - > > > voir le menu des
+      articles pour la prochaine op\xE9ration\n\n> cr\xE9er un nouvel objet\n- >
+      > utilisez itemeditor pour mieux cr\xE9er\n- > > le menu optionnel est obligatoire,
+      les autres sont obligatoires\n- > > assurez - vous de cocher l'option \"Read
+      / Write\" pour le Sprite de Tetris item\n- > > cr\xE9ation de griduiprefab\n-
+      - > > > copiez le mod\xE8le GP dans la hi\xE9rarchie pour cr\xE9er un panneau
+      de sac \xE0 dos personnalis\xE9.\n- - > > > assurez - vous que la valeur d'altitude
+      de GP > template affiche correctement le panneau de grille, cela d\xE9pend
+      de la capacit\xE9 de la vue d\xE9filante \xE0 d\xE9finir correctement l'altitude
+      appropri\xE9e\n\n> param\xE8tres de la grille\n- > > ajout de scripts tetrisitemgrid
+      et gridinteract \xE0 l'interface utilisateur image pour cr\xE9er une grille
+      Tetris\n- > > d\xE9finir gridsizewidth et gridsizehight pour d\xE9finir la
+      taille de la grille\n\n> cr\xE9er une nouvelle forme Tetris\n- > > Nom de la
+      nouvelle forme dans tetrisshapepos pour le script enums\n- > > ajout de nouvelles
+      formes dans GameData / tetrisitempointset\n- > > d\xE9finit le coin sup\xE9rieur
+      gauche comme origine avec les coordonn\xE9es (0,0), remplit les coordonn\xE9es
+      du point du syst\xE8me de coordonn\xE9es de la grille de toute forme dans la
+      liste des points, assurez - vous que la valeur num\xE9rique est un entier positif"
     m_Metadata:
       m_Items: []
   references:
