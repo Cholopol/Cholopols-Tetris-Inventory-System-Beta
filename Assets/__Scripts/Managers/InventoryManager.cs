@@ -169,6 +169,7 @@ namespace ChosTIS
         {
             if (container == null) return;
             TetrisItemGrid tetrisItemGrid = container as TetrisItemGrid;
+            selectedTetrisItem.CurrentInventoryContainer = tetrisItemGrid;
             bool isDone = tetrisItemGrid.TryPlaceTetrisItem(
                 ref selectedTetrisItem,
                 tileGridOriginPosition.x, 
@@ -186,6 +187,7 @@ namespace ChosTIS
         private IEnumerator PlaceChildItem(TetrisItem parentItem, TetrisItemGrid targetGrid, InventorySlot fromSlot)
         {
             if (!parentItem.TryGetItemComponent<GridPanelComponent>(out GridPanelComponent gridPanel)) yield break;
+            yield return null;
             if (gridPanel.TetrisItemGrids.Count > 0)
             {
                 foreach (TetrisItemGrid fromGrid in gridPanel.TetrisItemGrids)

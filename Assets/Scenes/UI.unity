@@ -9536,7 +9536,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: V CD/TIS.20250416011-Beta.2
+  m_Text: V CD/TIS.20250416011-Beta.2.1
 --- !u!222 &1138370376
 CanvasRenderer:
   m_ObjectHideFlags: 0
