@@ -42,7 +42,7 @@ namespace ChosTIS
                     Destroy(selectedTetrisItem.gameObject);
                     selectedTetrisItem = null;
                 }
-                CreateRandomItem(selectedItemIndex);
+                CreateItemInOrder(selectedItemIndex);
                 ++selectedItemIndex;
             }
 
@@ -104,12 +104,14 @@ namespace ChosTIS
         {
             if (selectedTetrisItemGrid == null) return new Vector2Int();
             Vector2 origin = Input.mousePosition;
+            Vector2Int tileGridPosition = selectedTetrisItemGrid.GetTileGridPosition(origin);
             if (tetrisItemGhost.ItemDetails != null)
             {
-                origin.x -= (tetrisItemGhost.WIDTH - 1) * TetrisItemGrid.tileSizeWidth / 2;
-                origin.y += (tetrisItemGhost.HEIGHT - 1) * TetrisItemGrid.tileSizeHeight / 2;
+                int offsetX = Mathf.FloorToInt((tetrisItemGhost.WIDTH - 1) / 2);
+                int offsetY = Mathf.FloorToInt((tetrisItemGhost.HEIGHT - 1) / 2);
+                tileGridPosition.x -= offsetX;
+                tileGridPosition.y -= offsetY;
             }
-            Vector2Int tileGridPosition = selectedTetrisItemGrid.GetTileGridPosition(origin);
             return tileGridPosition;
         }
 
@@ -259,8 +261,7 @@ namespace ChosTIS
             return stackableComponent;
         }
 
-        //Add random items
-        private void CreateRandomItem(int selectedItemIndex)
+        private void CreateItemInOrder(int selectedItemIndex)
         {
             if (selectedTetrisItem) return;
 

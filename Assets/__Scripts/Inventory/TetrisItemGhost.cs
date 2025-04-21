@@ -49,8 +49,6 @@ namespace ChosTIS
             if (InventoryManager.Instance.selectedTetrisItemGrid != null)
             {
                 Vector2Int positionOnGrid = InventoryManager.Instance.GetGhostTileGridOriginPosition();
-                if (oldPosition == positionOnGrid) return;
-                oldPosition = positionOnGrid;
 
                 onGridPositionX = positionOnGrid.x;
                 onGridPositionY = positionOnGrid.y;
@@ -86,7 +84,17 @@ namespace ChosTIS
         public void OnDrag(PointerEventData eventData)
         {
             if (eventData.button != PointerEventData.InputButton.Left) return;
-            ghostRect.anchoredPosition += eventData.delta / GetComponentInParent<Canvas>().scaleFactor;
+            //ghostRect.anchoredPosition += eventData.delta / GetComponentInParent<Canvas>().scaleFactor;
+            Vector2 localPoint;
+            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                ghostRect.parent as RectTransform,
+                eventData.position,
+                null,
+                //canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera,
+                out localPoint))
+            {
+                ghostRect.localPosition = localPoint;
+            }
         }
 
         public void OnEndDrag(PointerEventData eventData)
